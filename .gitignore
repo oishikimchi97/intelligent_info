@@ -1,0 +1,8 @@
+OpenEarthMap_wo_xBD/
+
+outputs/
+__pycache__/
+
+open_earth_map_intelligence_assignment/
+checkpoints/
+wandb/
