@@ -16,7 +16,7 @@ class OpenEarthMapDataModule(pl.LightningDataModule):
         img_size=512,
         n_classes=9,
         batch_size=4,
-        num_workers=19
+        num_workers=19,
     ):
         super().__init__()
         self.data_dir = data_dir
@@ -29,12 +29,16 @@ class OpenEarthMapDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         fns = [f for f in Path(self.data_dir).rglob("*.tif") if "/images/" in str(f)]
-        self.train_fns = [str(f) for f in fns if f.name in np.loadtxt(self.train_list, dtype=str)]
-        self.val_fns = [str(f) for f in fns if f.name in np.loadtxt(self.val_list, dtype=str)]
+        self.train_fns = [
+            str(f) for f in fns if f.name in np.loadtxt(self.train_list, dtype=str)
+        ]
+        self.val_fns = [
+            str(f) for f in fns if f.name in np.loadtxt(self.val_list, dtype=str)
+        ]
 
         train_augm = torchvision.transforms.Compose(
             [
-                open_earth_map.transforms.Rotate(),
+                # open_earth_map.transforms.Rotate(),
                 open_earth_map.transforms.Crop(self.img_size),
             ],
         )

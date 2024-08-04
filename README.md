@@ -1,0 +1,1 @@
+This repo contains codes for the final assigment `intelligence informatics` lectured by harada tasuya in Utokyo.

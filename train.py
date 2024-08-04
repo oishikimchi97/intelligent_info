@@ -2,7 +2,6 @@ from calendar import EPOCH
 from pathlib import Path
 import warnings
 import torch
-from torch import distributed as dist
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
@@ -17,7 +16,7 @@ if __name__ == "__main__":
     IMG_SIZE = 512
     N_CLASSES = 9
     BATCH_SIZE = 8
-    EPOCH = 30
+    EPOCH = 100
     NUM_DEVICE = 1
 
     data_module = OpenEarthMapDataModule(
@@ -30,12 +29,12 @@ if __name__ == "__main__":
     print("Training samples   :", len(data_module.train_fns))
     print("Validation samples :", len(data_module.val_fns))
 
-    model_name = "Unet"
+    model_name = "UnetPlusPlus"
 
     # Initialize WandbLogger
     wandb_logger = WandbLogger(
         project="open_earth_map_intelligence_assignment",
-        name=f"{model_name}-EfficientNet_B4_epoch{EPOCH}",
+        name=f"{model_name}-EfficientNet_B4-epoch{EPOCH}-ce_loss-w/o_aug-w_warmup",
         offline=False,
     )
 
@@ -47,7 +46,7 @@ if __name__ == "__main__":
     )
 
     pl_module = OpenEarthMapLightningModule(
-        model_name=model_name, n_classes=N_CLASSES, lr=1e-4
+        model_name=model_name, n_classes=N_CLASSES, lr=1e-4, warmup_epoch=10
     )
 
     if trainer.global_rank == 0:
@@ -69,7 +68,7 @@ if __name__ == "__main__":
 
     if trainer.global_rank == 0:
         model_save_path = str(checkpoint_dir / "final_model.pth")
-        trainer.save_checkpoint(model_save_path)
+        trainer.save_checkpoint(model_save_path, weights_only=True)
 
         print("Training completed!")
         print(f"Model saved at {model_save_path}")
