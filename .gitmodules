@@ -1,0 +1,3 @@
+[submodule "open_earth_map"]
+	path = open_earth_map
+	url = https://github.com/bao18/open_earth_map.git
